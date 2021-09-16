@@ -38,6 +38,18 @@ class _LandingPageState extends State<LandingPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  void doLogin() {
+    isLoading = true;
+    setState(() {});
+
+    ApiUtils.login(username: username.text, password: password.text)
+        .then((value) {
+      print(value.body);
+      isLoading = false;
+      setState(() {});
+    });
+  }
+
   void doSignup() {
     isLoading = true;
     setState(() {});
@@ -48,7 +60,29 @@ class _LandingPageState extends State<LandingPage> {
       password: password.text,
     ).then((value) {
       isLoading = false;
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          backgroundColor: Colors.white,
+          child: Container(
+            height: 100,
+            width: 200,
+            child: Center(
+              child: Text(
+                "Registration Successful",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black45),
+              ),
+            ),
+          ),
+        ),
+      );
       setState(() {});
+      Future.delayed(Duration(milliseconds: 2000), () {
+        Navigator.pop(context);
+      });
     });
   }
 
@@ -58,7 +92,6 @@ class _LandingPageState extends State<LandingPage> {
       appBar: AppBar(
         backgroundColor: Colors.black.withOpacity(0),
         title: const Text("MeetWeeb"),
-        centerTitle: true,
         elevation: 0,
       ),
       extendBodyBehindAppBar: true,
@@ -89,12 +122,22 @@ class _LandingPageState extends State<LandingPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
                                 Text(
-                                  "Find Your Nearby Weeb Friend",
+                                  "Find Weeb Community Circle Nearby",
                                   style: TextStyle(
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white),
                                 ),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                                  style: TextStyle(
+                                      color: Colors.black38,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                )
                               ],
                             ),
                           ),
@@ -149,9 +192,15 @@ class _LandingPageState extends State<LandingPage> {
                                   onPressed: () {
                                     if (isRegister) {
                                       doSignup();
+                                    } else {
+                                      doLogin();
                                     }
                                   },
-                                  child: Text("LOGIN"),
+                                  child: Text(
+                                    isRegister ? "REGISTER" : "LOGIN",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                   style: ButtonStyle(
                                       fixedSize:
                                           MaterialStateProperty.resolveWith(
